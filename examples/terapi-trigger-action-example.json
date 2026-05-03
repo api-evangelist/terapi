@@ -1,0 +1,36 @@
+{
+  "title": "Terapi Trigger Action",
+  "description": "Example request to trigger a create-issue action on a connected GitHub account",
+  "request": {
+    "method": "POST",
+    "url": "https://api.terapi.dev/action/trigger",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer your-secret-key-here"
+    },
+    "body": {
+      "connection_id": "user-123",
+      "provider_config_key": "github-prod",
+      "action_name": "create-issue",
+      "input": {
+        "owner": "acme-corp",
+        "repo": "backend",
+        "title": "Bug: login page not loading",
+        "body": "The login page returns 500 on POST requests",
+        "labels": ["bug", "urgent"]
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "action_name": "create-issue",
+      "output": {
+        "issue_number": 142,
+        "url": "https://github.com/acme-corp/backend/issues/142",
+        "status": "open"
+      }
+    }
+  }
+}

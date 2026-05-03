@@ -1,0 +1,301 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "Terapi API"
+  description: >-
+    Terapi is an open-source embedded integration platform. The API manages
+    integration connections, authentication tokens, data synchronization, and
+    action triggers for third-party services embedded in SaaS products.
+  tags:
+    - Terapi
+    - Embedded iPaaS
+    - Integration
+    - Open Source
+    - Connectors
+    - Authentication
+  created: "2026-05-03"
+  modified: "2026-05-03"
+
+binds:
+  - namespace: env
+    keys:
+      TERAPI_SECRET_KEY: TERAPI_SECRET_KEY
+
+capability:
+  consumes:
+    - type: http
+      namespace: terapi
+      baseUri: "https://api.terapi.dev"
+      description: "Terapi embedded integration platform REST API"
+      authentication:
+        type: bearer
+        token: "{{env.TERAPI_SECRET_KEY}}"
+      resources:
+        - name: connections
+          path: /connection
+          description: "End-user integration connections management"
+          operations:
+            - name: list-connections
+              method: GET
+              description: "Returns a list of all active connections"
+              inputParameters:
+                - name: provider_config_key
+                  in: query
+                  type: string
+                  required: false
+                  description: "Filter connections by integration provider"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: create-connection
+              method: POST
+              description: "Creates a new integration connection for an end-user"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  connection_id: "{{tools.connection_id}}"
+                  provider_config_key: "{{tools.provider_config_key}}"
+                  credentials: "{{tools.credentials}}"
+                  metadata: "{{tools.metadata}}"
+            - name: get-connection
+              method: GET
+              description: "Returns details of a specific connection"
+              inputParameters:
+                - name: connection_id
+                  in: path
+                  type: string
+                  required: true
+                  description: "The unique identifier of the connection"
+                - name: provider_config_key
+                  in: query
+                  type: string
+                  required: true
+                  description: "The provider config key for this connection"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: delete-connection
+              method: DELETE
+              description: "Deletes a connection and revokes associated credentials"
+              inputParameters:
+                - name: connection_id
+                  in: path
+                  type: string
+                  required: true
+                  description: "The unique identifier of the connection"
+                - name: provider_config_key
+                  in: query
+                  type: string
+                  required: true
+                  description: "The provider config key"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+        - name: integrations
+          path: /integration
+          description: "Integration provider configurations"
+          operations:
+            - name: list-integrations
+              method: GET
+              description: "Returns a list of all configured integrations"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: create-integration
+              method: POST
+              description: "Creates a new integration configuration"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  provider_config_key: "{{tools.provider_config_key}}"
+                  provider: "{{tools.provider}}"
+                  oauth_client_id: "{{tools.oauth_client_id}}"
+                  oauth_client_secret: "{{tools.oauth_client_secret}}"
+                  oauth_scopes: "{{tools.oauth_scopes}}"
+            - name: get-integration
+              method: GET
+              description: "Returns details of a specific integration"
+              inputParameters:
+                - name: provider_config_key
+                  in: path
+                  type: string
+                  required: true
+                  description: "The unique key for this integration configuration"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: delete-integration
+              method: DELETE
+              description: "Deletes an integration configuration"
+              inputParameters:
+                - name: provider_config_key
+                  in: path
+                  type: string
+                  required: true
+                  description: "The unique key for this integration configuration"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+        - name: sync
+          path: /sync
+          description: "Data synchronization management"
+          operations:
+            - name: trigger-sync
+              method: POST
+              description: "Triggers a data synchronization run"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  connection_id: "{{tools.connection_id}}"
+                  provider_config_key: "{{tools.provider_config_key}}"
+                  syncs: "{{tools.syncs}}"
+            - name: get-sync-status
+              method: GET
+              description: "Returns the current status and history of a sync"
+              inputParameters:
+                - name: connection_id
+                  in: path
+                  type: string
+                  required: true
+                  description: "The connection identifier"
+                - name: sync_name
+                  in: path
+                  type: string
+                  required: true
+                  description: "The name of the sync"
+                - name: provider_config_key
+                  in: query
+                  type: string
+                  required: true
+                  description: "The provider config key"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+        - name: actions
+          path: /action
+          description: "Action triggers on connected third-party services"
+          operations:
+            - name: trigger-action
+              method: POST
+              description: "Triggers an action on a connected third-party service"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  connection_id: "{{tools.connection_id}}"
+                  provider_config_key: "{{tools.provider_config_key}}"
+                  action_name: "{{tools.action_name}}"
+                  input: "{{tools.input}}"
+        - name: auth
+          path: /auth
+          description: "Authentication token management"
+          operations:
+            - name: get-auth-token
+              method: GET
+              description: "Returns the current authentication token for a connection"
+              inputParameters:
+                - name: provider_config_key
+                  in: path
+                  type: string
+                  required: true
+                  description: "The provider config key"
+                - name: connection_id
+                  in: path
+                  type: string
+                  required: true
+                  description: "The connection identifier"
+                - name: force_refresh
+                  in: query
+                  type: boolean
+                  required: false
+                  description: "Force token refresh"
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+
+  exposes:
+    - type: rest
+      port: 8100
+      namespace: terapi-api
+      resources:
+        - path: /v1/connections
+          name: connections
+          description: "List integration connections"
+          operations:
+            - method: GET
+              name: list-connections
+              description: "List all active connections"
+              call: "terapi.list-connections"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/integrations
+          name: integrations
+          description: "List integrations"
+          operations:
+            - method: GET
+              name: list-integrations
+              description: "List all configured integrations"
+              call: "terapi.list-integrations"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9100
+      namespace: terapi-mcp
+      transport: http
+      tools:
+        - name: list-connections
+          description: "List all active integration connections"
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "terapi.list-connections"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: list-integrations
+          description: "List all configured integration providers"
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "terapi.list-integrations"
+          outputParameters:
+            - type: object
+              mapping: "$."

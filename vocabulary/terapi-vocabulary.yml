@@ -1,0 +1,141 @@
+name: Terapi Vocabulary
+description: >-
+  Core vocabulary and taxonomy for Terapi, the open-source embedded integration
+  platform. Covers iPaaS concepts, integration patterns, authentication flows,
+  and platform-specific terminology.
+created: '2026-05-03'
+modified: '2026-05-03'
+terms:
+  - term: Embedded iPaaS
+    definition: >-
+      An integration platform embedded directly into a SaaS product, enabling
+      the product to offer native third-party integrations to its customers.
+      Unlike standalone iPaaS tools, embedded iPaaS is invisible to end-users.
+    tags:
+      - Core Concepts
+      - Integration Platform
+
+  - term: Connection
+    definition: >-
+      An authenticated link between an end-user account and a third-party service.
+      Connections persist credentials securely and track authentication state.
+      Each connection is identified by a connection_id you define.
+    tags:
+      - Core Concepts
+      - Authentication
+
+  - term: Integration
+    definition: >-
+      A provider configuration that defines how to connect to a specific
+      third-party service (e.g., GitHub, Salesforce, Slack). An integration
+      holds OAuth credentials and defines available syncs and actions.
+    tags:
+      - Core Concepts
+      - Configuration
+
+  - term: Provider
+    definition: >-
+      A third-party service that Terapi can connect to (e.g., github, salesforce,
+      stripe, hubspot). Terapi maintains a catalog of supported providers with
+      pre-built authentication and connector logic.
+    tags:
+      - Core Concepts
+      - Connectors
+
+  - term: Provider Config Key
+    definition: >-
+      Your application's unique identifier for an integration configuration.
+      Allows multiple configurations for the same provider (e.g., github-prod
+      and github-sandbox).
+    tags:
+      - Configuration
+      - Core Concepts
+
+  - term: Sync
+    definition: >-
+      A recurring data fetch operation that pulls data from a connected
+      third-party service and makes it available in your application. Syncs
+      run on a schedule and track last sync time and record count.
+    tags:
+      - Data Synchronization
+      - Core Concepts
+
+  - term: Action
+    definition: >-
+      A write operation triggered on a connected third-party service. Actions
+      are discrete, named operations like create-issue, send-message, or
+      update-record. Actions run synchronously and return results.
+    tags:
+      - Core Concepts
+      - Write Operations
+
+  - term: OAuth 2.0
+    definition: >-
+      The primary authentication protocol used by most modern SaaS APIs.
+      Terapi handles the full OAuth flow (authorization, token exchange,
+      token refresh) transparently for connected users.
+    tags:
+      - Authentication
+      - Protocols
+
+  - term: Token Refresh
+    definition: >-
+      The automatic process of obtaining a new access token when the current
+      one expires. Terapi handles token refresh transparently so your
+      application always has valid credentials.
+    tags:
+      - Authentication
+      - OAuth 2.0
+
+  - term: Secret Key
+    definition: >-
+      The authentication credential used by your application server to call
+      the Terapi API. Passed as a Bearer token in the Authorization header.
+      Never expose the secret key to clients.
+    tags:
+      - Authentication
+      - Security
+
+  - term: Connector
+    definition: >-
+      The integration logic that knows how to authenticate with and talk to
+      a specific third-party provider. Terapi provides hundreds of pre-built
+      connectors and allows custom connectors via TypeScript functions.
+    tags:
+      - Connectors
+      - Core Concepts
+
+  - term: Unified API
+    definition: >-
+      A standardized API interface that normalizes data from multiple providers
+      into a consistent schema. Terapi's unified APIs reduce integration
+      complexity when connecting to similar categories of services.
+    tags:
+      - API Design
+      - Data Normalization
+
+  - term: Webhook
+    definition: >-
+      Real-time event notifications pushed from Terapi to your application
+      when a sync completes, a connection is established, or an error occurs.
+    tags:
+      - Events
+      - Real-Time
+
+  - term: Self-Hosted
+    definition: >-
+      Terapi deployment mode where the platform runs on your own infrastructure.
+      Useful for data privacy, compliance requirements, or custom scaling needs.
+      Alternatively, use Terapi Cloud.
+    tags:
+      - Deployment
+      - Infrastructure
+
+  - term: Metadata
+    definition: >-
+      Custom key-value data stored with a Terapi connection. Use metadata to
+      associate connections with your application's users, tenants, or other
+      business entities.
+    tags:
+      - Data Model
+      - Connections

@@ -1,0 +1,33 @@
+{
+  "title": "Terapi List Connections",
+  "description": "Example request to list all active integration connections for a GitHub integration",
+  "request": {
+    "method": "GET",
+    "url": "https://api.terapi.dev/connection?provider_config_key=github-prod",
+    "headers": {
+      "Authorization": "Bearer your-secret-key-here"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "connections": [
+        {
+          "id": "user-123",
+          "provider_config_key": "github-prod",
+          "provider": "github",
+          "created_at": "2026-01-15T10:00:00Z",
+          "updated_at": "2026-05-03T08:00:00Z",
+          "metadata": {
+            "user_id": "user-123",
+            "tenant_id": "acme-corp"
+          },
+          "credentials": {
+            "type": "oauth2",
+            "expires_at": "2026-05-04T08:00:00Z"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "schema": "https://schema.org/",
+    "terapi": "https://terapi.dev/api/v1#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "Integration": {
+      "@id": "terapi:Integration",
+      "@type": "@id",
+      "rdfs:comment": "An integration provider configuration in Terapi"
+    },
+    "Connection": {
+      "@id": "terapi:Connection",
+      "@type": "@id",
+      "rdfs:comment": "An authenticated end-user connection to a third-party service"
+    },
+    "Sync": {
+      "@id": "terapi:Sync",
+      "@type": "@id",
+      "rdfs:comment": "A data synchronization job in Terapi"
+    },
+    "Action": {
+      "@id": "terapi:Action",
+      "@type": "@id",
+      "rdfs:comment": "A write action triggered on a connected third-party service"
+    },
+    "AuthToken": {
+      "@id": "terapi:AuthToken",
+      "@type": "@id",
+      "rdfs:comment": "An authentication token for a Terapi connection"
+    },
+
+    "id": "@id",
+    "name": "schema:name",
+    "description": "schema:description",
+    "provider": {
+      "@id": "terapi:provider",
+      "@type": "xsd:string"
+    },
+    "provider_config_key": {
+      "@id": "terapi:providerConfigKey",
+      "@type": "xsd:string"
+    },
+    "connection_id": {
+      "@id": "terapi:connectionId",
+      "@type": "xsd:string"
+    },
+    "connection_count": {
+      "@id": "terapi:connectionCount",
+      "@type": "xsd:integer"
+    },
+    "metadata": {
+      "@id": "terapi:metadata",
+      "@type": "@json"
+    },
+    "credentials": {
+      "@id": "terapi:credentials",
+      "@type": "@json"
+    },
+    "access_token": {
+      "@id": "terapi:accessToken",
+      "@type": "xsd:string"
+    },
+    "expires_at": {
+      "@id": "terapi:expiresAt",
+      "@type": "xsd:dateTime"
+    },
+    "sync_name": {
+      "@id": "terapi:syncName",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "schema:status",
+      "@type": "@vocab",
+      "@context": {
+        "running": "terapi:Running",
+        "success": "terapi:Success",
+        "error": "terapi:Error",
+        "paused": "terapi:Paused"
+      }
+    },
+    "records_count": {
+      "@id": "terapi:recordsCount",
+      "@type": "xsd:integer"
+    },
+    "action_name": {
+      "@id": "terapi:actionName",
+      "@type": "xsd:string"
+    },
+    "last_sync_date": {
+      "@id": "terapi:lastSyncDate",
+      "@type": "xsd:dateTime"
+    },
+    "next_sync_date": {
+      "@id": "terapi:nextSyncDate",
+      "@type": "xsd:dateTime"
+    },
+    "created_at": {
+      "@id": "schema:dateCreated",
+      "@type": "xsd:dateTime"
+    },
+    "updated_at": {
+      "@id": "schema:dateModified",
+      "@type": "xsd:dateTime"
+    },
+    "Organization": "schema:Organization",
+    "url": "schema:url"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "name": "Terapi Integration Connection",
+  "description": "Structure documentation for an integration connection in Terapi, representing an authenticated link between an end-user account and a third-party service.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true,
+      "description": "Your application's unique identifier for this connection. This is the connection ID you provide when creating the connection - typically your user ID or tenant ID."
+    },
+    {
+      "name": "provider_config_key",
+      "type": "string",
+      "required": true,
+      "description": "The key of the integration configuration this connection belongs to (e.g., 'github-prod', 'salesforce-sandbox')"
+    },
+    {
+      "name": "provider",
+      "type": "string",
+      "required": true,
+      "description": "The third-party provider name from Terapi's supported providers list (e.g., 'github', 'salesforce', 'slack', 'hubspot', 'stripe')"
+    },
+    {
+      "name": "created_at",
+      "type": "string (date-time)",
+      "required": false,
+      "description": "ISO 8601 timestamp when the connection was established"
+    },
+    {
+      "name": "updated_at",
+      "type": "string (date-time)",
+      "required": false,
+      "description": "ISO 8601 timestamp when the connection was last updated (e.g., token refresh)"
+    },
+    {
+      "name": "metadata",
+      "type": "object",
+      "required": false,
+      "description": "Custom key-value metadata stored with this connection. Use for tenant IDs, display names, scoping information, etc."
+    },
+    {
+      "name": "credentials",
+      "type": "object",
+      "required": false,
+      "description": "Current credential state. Raw secrets are never returned - only status information.",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "description": "Credential type used for this connection",
+          "enum": ["oauth2", "oauth1", "api_key", "basic", "custom"]
+        },
+        {
+          "name": "expires_at",
+          "type": "string (date-time)",
+          "description": "Token expiration time for OAuth connections"
+        }
+      ]
+    }
+  ]
+}

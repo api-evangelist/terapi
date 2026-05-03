@@ -1,0 +1,201 @@
+extends: spectral:oas
+rules:
+  # Authentication
+  terapi-security-apikey:
+    description: Terapi API must use API key (secret key) authentication
+    message: "Terapi API must define global API key security"
+    given: "$"
+    then:
+      field: security
+      function: truthy
+    severity: error
+
+  # Path Conventions
+  terapi-path-resource-style:
+    description: Terapi API paths use noun-based resource names
+    message: "Path '{{property}}' should use resource nouns (connection, integration, sync, action, auth)"
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/(connection|integration|sync|action|auth)"
+    severity: warn
+
+  terapi-path-no-trailing-slash:
+    description: Paths must not have trailing slashes
+    message: "Path '{{property}}' must not have a trailing slash"
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "/$"
+    severity: warn
+
+  # HTTP Methods
+  terapi-list-get-method:
+    description: List operations should use GET method
+    message: "List operations should use GET"
+    given: "$.paths[*][get].operationId"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(list|get)[A-Z]"
+    severity: warn
+
+  terapi-create-post-method:
+    description: Create operations should use POST
+    message: "Create/trigger operations should use POST"
+    given: "$.paths[*][post].operationId"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(create|trigger)[A-Z]"
+    severity: warn
+
+  terapi-delete-method:
+    description: Delete operations must use DELETE
+    message: "Delete operations must use DELETE"
+    given: "$.paths[*][delete].operationId"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^delete[A-Z]"
+    severity: error
+
+  # Response Codes
+  terapi-get-200-response:
+    description: GET operations must return 200
+    message: "GET operations must define a 200 response"
+    given: "$.paths[*][get].responses"
+    then:
+      field: "200"
+      function: truthy
+    severity: error
+
+  terapi-delete-204-response:
+    description: DELETE operations should return 204
+    message: "DELETE operations should return 204 No Content"
+    given: "$.paths[*][delete].responses"
+    then:
+      field: "204"
+      function: truthy
+    severity: warn
+
+  terapi-401-response:
+    description: All authenticated operations must define 401
+    message: "All operations must define 401 Unauthorized response"
+    given: "$.paths[*][get,post,put,patch,delete].responses"
+    then:
+      field: "401"
+      function: truthy
+    severity: error
+
+  terapi-404-for-resource:
+    description: Resource operations with ID parameters should define 404
+    message: "Resource operations should define 404 Not Found"
+    given: "$.paths[*~'/{[^}]+}'][get,delete].responses"
+    then:
+      field: "404"
+      function: truthy
+    severity: warn
+
+  # Parameters
+  terapi-provider-config-key-required:
+    description: Operations using provider_config_key should mark it required
+    message: "provider_config_key parameter should be required"
+    given: "$.paths[*][*].parameters[?(@.name == 'provider_config_key')]"
+    then:
+      field: required
+      function: truthy
+    severity: warn
+
+  terapi-connection-id-required:
+    description: Path parameter connection_id must be required
+    message: "Path parameter connection_id must be marked required"
+    given: "$.paths[*][*].parameters[?(@.name == 'connection_id' && @.in == 'path')]"
+    then:
+      field: required
+      function: truthy
+    severity: error
+
+  # Documentation
+  terapi-operation-id:
+    description: All operations must have an operationId
+    message: "Operation is missing an operationId"
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: operationId
+      function: truthy
+    severity: error
+
+  terapi-operation-summary:
+    description: All operations must have a summary
+    message: "Operation is missing a summary"
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: summary
+      function: truthy
+    severity: error
+
+  terapi-summary-title-case:
+    description: Summaries must use Title Case
+    message: "Summary '{{value}}' must use Title Case (start with capital letter)"
+    given: "$.paths[*][get,post,put,patch,delete].summary"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[A-Z]"
+    severity: warn
+
+  terapi-operation-description:
+    description: Operations should have descriptions
+    message: "Operation is missing a description"
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: description
+      function: truthy
+    severity: warn
+
+  terapi-tags:
+    description: Operations must have tags
+    message: "Operation is missing tags"
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: tags
+      function: truthy
+    severity: error
+
+  # Schema Conventions
+  terapi-schema-descriptions:
+    description: Schema components should have descriptions
+    message: "Schema component '{{path}}' is missing a description"
+    given: "$.components.schemas[*]"
+    then:
+      field: description
+      function: truthy
+    severity: warn
+
+  terapi-connection-id-string:
+    description: Connection IDs should always be string type
+    message: "Connection ID fields should be type: string"
+    given: "$.components.schemas[*].properties.id"
+    then:
+      field: type
+      function: enumeration
+      functionOptions:
+        values:
+          - string
+    severity: warn
+
+  # Webhook/Event Consistency
+  terapi-input-object:
+    description: Action trigger input should be an object
+    message: "Action input should be type: object"
+    given: "$.components.schemas.TriggerActionRequest.properties.input"
+    then:
+      field: type
+      function: enumeration
+      functionOptions:
+        values:
+          - object
+    severity: warn

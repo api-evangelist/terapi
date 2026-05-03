@@ -1,0 +1,312 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "Terapi Embedded Integrations"
+  description: >-
+    Workflow capability for building native product integrations using Terapi.
+    Combines connection management, integration configuration, data
+    synchronization, action triggering, and authentication to support the full
+    embedded iPaaS lifecycle for SaaS platform engineers building native
+    third-party integrations for their customers.
+  tags:
+    - Terapi
+    - Embedded iPaaS
+    - Integration
+    - Open Source
+    - SaaS
+    - Connectors
+    - Workflow Automation
+  created: "2026-05-03"
+  modified: "2026-05-03"
+
+binds:
+  - namespace: env
+    keys:
+      TERAPI_SECRET_KEY: TERAPI_SECRET_KEY
+
+capability:
+  consumes:
+    - import: terapi
+      location: ./shared/terapi.yaml
+
+  exposes:
+    - type: rest
+      port: 8080
+      namespace: terapi-integrations-api
+      description: "Unified REST API for managing embedded third-party integrations."
+      resources:
+        - path: /v1/connections
+          name: connections
+          description: "End-user integration connections"
+          operations:
+            - method: GET
+              name: list-connections
+              description: "List all active connections across all integrations"
+              call: "terapi.list-connections"
+              with:
+                provider_config_key: "rest.provider_config_key"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: POST
+              name: create-connection
+              description: "Create a new integration connection for an end-user"
+              call: "terapi.create-connection"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/connections/{connection_id}
+          name: connection
+          description: "Manage a specific integration connection"
+          operations:
+            - method: GET
+              name: get-connection
+              description: "Get details of a connection"
+              call: "terapi.get-connection"
+              with:
+                connection_id: "rest.connection_id"
+                provider_config_key: "rest.provider_config_key"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: DELETE
+              name: delete-connection
+              description: "Delete a connection and revoke credentials"
+              call: "terapi.delete-connection"
+              with:
+                connection_id: "rest.connection_id"
+                provider_config_key: "rest.provider_config_key"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/integrations
+          name: integrations
+          description: "Integration provider configurations"
+          operations:
+            - method: GET
+              name: list-integrations
+              description: "List all configured integration providers"
+              call: "terapi.list-integrations"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: POST
+              name: create-integration
+              description: "Create a new integration provider configuration"
+              call: "terapi.create-integration"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/integrations/{provider_config_key}
+          name: integration
+          description: "Manage a specific integration"
+          operations:
+            - method: GET
+              name: get-integration
+              description: "Get details of an integration"
+              call: "terapi.get-integration"
+              with:
+                provider_config_key: "rest.provider_config_key"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: DELETE
+              name: delete-integration
+              description: "Delete an integration configuration"
+              call: "terapi.delete-integration"
+              with:
+                provider_config_key: "rest.provider_config_key"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/sync/trigger
+          name: sync-trigger
+          description: "Trigger data synchronization"
+          operations:
+            - method: POST
+              name: trigger-sync
+              description: "Trigger a data sync for a connection"
+              call: "terapi.trigger-sync"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/sync/{connection_id}/{sync_name}
+          name: sync-status
+          description: "Sync status and history"
+          operations:
+            - method: GET
+              name: get-sync-status
+              description: "Get status of a specific sync"
+              call: "terapi.get-sync-status"
+              with:
+                connection_id: "rest.connection_id"
+                sync_name: "rest.sync_name"
+                provider_config_key: "rest.provider_config_key"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/actions/trigger
+          name: action-trigger
+          description: "Trigger actions on third-party services"
+          operations:
+            - method: POST
+              name: trigger-action
+              description: "Trigger an action on a connected service"
+              call: "terapi.trigger-action"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/auth/token/{provider_config_key}/{connection_id}
+          name: auth-token
+          description: "Authentication token management"
+          operations:
+            - method: GET
+              name: get-auth-token
+              description: "Get the current authentication token for a connection"
+              call: "terapi.get-auth-token"
+              with:
+                provider_config_key: "rest.provider_config_key"
+                connection_id: "rest.connection_id"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9090
+      namespace: terapi-integrations-mcp
+      transport: http
+      description: "MCP server for AI-assisted embedded integration management."
+      tools:
+        - name: list-connections
+          description: "List all active integration connections between end-users and third-party services"
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "terapi.list-connections"
+          with:
+            provider_config_key: "tools.provider_config_key"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: create-connection
+          description: "Create a new integration connection for an end-user with OAuth or API key credentials"
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "terapi.create-connection"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-connection
+          description: "Get details and authentication status of a specific integration connection"
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "terapi.get-connection"
+          with:
+            connection_id: "tools.connection_id"
+            provider_config_key: "tools.provider_config_key"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: delete-connection
+          description: "Delete an integration connection and revoke associated credentials"
+          hints:
+            readOnly: false
+            destructive: true
+            idempotent: true
+          call: "terapi.delete-connection"
+          with:
+            connection_id: "tools.connection_id"
+            provider_config_key: "tools.provider_config_key"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: list-integrations
+          description: "List all configured integration providers available in this Terapi environment"
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "terapi.list-integrations"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: create-integration
+          description: "Create a new integration provider configuration with OAuth credentials"
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "terapi.create-integration"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-integration
+          description: "Get details and connection count for a specific integration provider"
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "terapi.get-integration"
+          with:
+            provider_config_key: "tools.provider_config_key"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: delete-integration
+          description: "Delete an integration configuration and all associated connections"
+          hints:
+            readOnly: false
+            destructive: true
+            idempotent: true
+          call: "terapi.delete-integration"
+          with:
+            provider_config_key: "tools.provider_config_key"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: trigger-sync
+          description: "Trigger a data synchronization run to fetch updated data from a third-party service"
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "terapi.trigger-sync"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-sync-status
+          description: "Get the current status and history of a data synchronization"
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "terapi.get-sync-status"
+          with:
+            connection_id: "tools.connection_id"
+            sync_name: "tools.sync_name"
+            provider_config_key: "tools.provider_config_key"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: trigger-action
+          description: "Trigger a write action on a connected third-party service (create record, send message, update resource)"
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "terapi.trigger-action"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-auth-token
+          description: "Get the current authentication token for a connection, with automatic OAuth refresh"
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "terapi.get-auth-token"
+          with:
+            provider_config_key: "tools.provider_config_key"
+            connection_id: "tools.connection_id"
+          outputParameters:
+            - type: object
+              mapping: "$."
