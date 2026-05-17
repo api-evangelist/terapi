@@ -41,7 +41,7 @@ apis:
         url: https://docs.terapi.dev
       - type: GitHub
         url: https://github.com/terapi-dev/terapi
-      - type: Getting Started
+      - type: GettingStarted
         url: https://docs.terapi.dev/getting-started
       - type: OpenAPI
         url: >-
