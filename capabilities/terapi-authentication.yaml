@@ -1,0 +1,95 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Terapi API — Authentication
+  description: 'Terapi API — Authentication. 1 operations. Lead operation: Get Authentication Token. Self-contained Naftiko
+    capability covering one Terapi business surface.'
+  tags:
+  - Terapi
+  - Authentication
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    TERAPI_API_KEY: TERAPI_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: terapi-authentication
+    baseUri: https://api.terapi.dev
+    description: Terapi API — Authentication business capability. Self-contained, no shared references.
+    resources:
+    - name: auth-token-provider_config_key-connection_id
+      path: /auth/token/{provider_config_key}/{connection_id}
+      operations:
+      - name: getauthtoken
+        method: GET
+        description: Get Authentication Token
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: provider_config_key
+          in: path
+          type: string
+          description: The provider config key
+          required: true
+        - name: connection_id
+          in: path
+          type: string
+          description: The connection identifier
+          required: true
+        - name: force_refresh
+          in: query
+          type: boolean
+          description: Force a token refresh even if the current token is still valid
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.TERAPI_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: terapi-authentication-rest
+    port: 8080
+    description: REST adapter for Terapi API — Authentication. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/auth/token/{provider-config-key}/{connection-id}
+      name: auth-token-provider-config-key-connection-id
+      description: REST surface for auth-token-provider_config_key-connection_id.
+      operations:
+      - method: GET
+        name: getauthtoken
+        description: Get Authentication Token
+        call: terapi-authentication.getauthtoken
+        with:
+          provider_config_key: rest.provider_config_key
+          connection_id: rest.connection_id
+          force_refresh: rest.force_refresh
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: terapi-authentication-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Terapi API — Authentication. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: get-authentication-token
+      description: Get Authentication Token
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: terapi-authentication.getauthtoken
+      with:
+        provider_config_key: tools.provider_config_key
+        connection_id: tools.connection_id
+        force_refresh: tools.force_refresh
+      outputParameters:
+      - type: object
+        mapping: $.
