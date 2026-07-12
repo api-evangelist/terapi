@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/terapi-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: SecretKeyAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: Secret key from Terapi environment settings. Passed as 'Bearer {secret_key}'
+  sources:
+  - openapi/terapi-openapi.yml

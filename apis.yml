@@ -42,6 +42,10 @@ apis:
       - type: OpenAPI
         url: https://raw.githubusercontent.com/api-evangelist/terapi/refs/heads/main/openapi/terapi-openapi.yml
 common:
+  - type: DomainSecurity
+    url: security/terapi-domain-security.yml
+  - type: Authentication
+    url: authentication/terapi-authentication.yml
   - type: Website
     url: https://terapi.dev
   - type: Documentation
