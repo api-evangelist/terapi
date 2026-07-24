@@ -1,0 +1,225 @@
+openapi: 3.0.3
+info:
+  title: Terapi Actions Connections API
+  description: Terapi is an open-source embedded integration platform for building native product integrations. The REST API provides endpoints for managing integration connections, synchronizing data between third-party services, triggering actions on external APIs, and managing authentication tokens. Terapi enables SaaS products to offer native integrations to their customers without building each connector from scratch.
+  version: '1.0'
+  contact:
+    name: Terapi Team
+    url: https://terapi.dev
+servers:
+- url: https://api.terapi.dev
+  description: Terapi Cloud API
+- url: http://localhost:3003
+  description: Terapi Self-Hosted API
+security:
+- SecretKeyAuth: []
+tags:
+- name: Connections
+  description: Manage end-user connections to third-party integrations
+paths:
+  /connection:
+    get:
+      operationId: listConnections
+      summary: List Connections
+      description: Returns a list of all active connections for a given integration or provider. Connections represent authenticated links between end-user accounts and third-party services.
+      tags:
+      - Connections
+      parameters:
+      - name: provider_config_key
+        in: query
+        description: Filter connections by integration provider config key
+        schema:
+          type: string
+      - name: connection_id
+        in: query
+        description: Filter by a specific connection ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Connections retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createConnection
+      summary: Create Connection
+      description: Creates a new integration connection for an end-user with the specified provider. Used to programmatically create connections when auth tokens are already available.
+      tags:
+      - Connections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConnectionRequest'
+      responses:
+        '200':
+          description: Connection created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connection'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /connection/{connection_id}:
+    get:
+      operationId: getConnection
+      summary: Get Connection
+      description: Returns details of a specific connection including its authentication status and metadata.
+      tags:
+      - Connections
+      parameters:
+      - name: connection_id
+        in: path
+        required: true
+        description: The unique identifier of the connection
+        schema:
+          type: string
+      - name: provider_config_key
+        in: query
+        required: true
+        description: The provider config key for this connection
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Connection retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteConnection
+      summary: Delete Connection
+      description: Deletes a connection and revokes associated credentials. The end-user will need to re-authenticate to restore the connection.
+      tags:
+      - Connections
+      parameters:
+      - name: connection_id
+        in: path
+        required: true
+        description: The unique identifier of the connection
+        schema:
+          type: string
+      - name: provider_config_key
+        in: query
+        required: true
+        description: The provider config key for this connection
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Connection deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    CreateConnectionRequest:
+      type: object
+      required:
+      - connection_id
+      - provider_config_key
+      properties:
+        connection_id:
+          type: string
+          description: Your application's unique identifier for this connection
+        provider_config_key:
+          type: string
+          description: The integration provider config key
+        credentials:
+          type: object
+          description: Authentication credentials to store for this connection
+          additionalProperties: true
+        metadata:
+          type: object
+          description: Custom metadata to store with this connection
+          additionalProperties: true
+    ConnectionListResponse:
+      type: object
+      properties:
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Connection'
+    Connection:
+      type: object
+      description: An authenticated connection between an end-user and a third-party service
+      properties:
+        id:
+          type: string
+          description: Unique connection identifier (set by your application)
+        provider_config_key:
+          type: string
+          description: The integration provider config key
+        provider:
+          type: string
+          description: The third-party provider name (e.g., github, salesforce)
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          description: Custom metadata stored with this connection
+          additionalProperties: true
+        credentials:
+          type: object
+          description: Current credential state (no raw secrets returned)
+          properties:
+            type:
+              type: string
+              description: Credential type (oauth2, api_key, basic)
+            expires_at:
+              type: string
+              format: date-time
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+  responses:
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request parameters or body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    SecretKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Secret key from Terapi environment settings. Passed as 'Bearer {secret_key}'
+externalDocs:
+  description: Terapi Documentation
+  url: https://docs.terapi.dev

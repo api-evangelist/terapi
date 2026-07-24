@@ -1,0 +1,107 @@
+openapi: 3.0.3
+info:
+  title: Terapi Actions Authentication API
+  description: Terapi is an open-source embedded integration platform for building native product integrations. The REST API provides endpoints for managing integration connections, synchronizing data between third-party services, triggering actions on external APIs, and managing authentication tokens. Terapi enables SaaS products to offer native integrations to their customers without building each connector from scratch.
+  version: '1.0'
+  contact:
+    name: Terapi Team
+    url: https://terapi.dev
+servers:
+- url: https://api.terapi.dev
+  description: Terapi Cloud API
+- url: http://localhost:3003
+  description: Terapi Self-Hosted API
+security:
+- SecretKeyAuth: []
+tags:
+- name: Authentication
+  description: Manage authentication and token refresh for integrations
+paths:
+  /auth/token/{provider_config_key}/{connection_id}:
+    get:
+      operationId: getAuthToken
+      summary: Get Authentication Token
+      description: Returns the current authentication token for a connection. Terapi automatically refreshes OAuth tokens as needed before returning.
+      tags:
+      - Authentication
+      parameters:
+      - name: provider_config_key
+        in: path
+        required: true
+        description: The provider config key
+        schema:
+          type: string
+      - name: connection_id
+        in: path
+        required: true
+        description: The connection identifier
+        schema:
+          type: string
+      - name: force_refresh
+        in: query
+        description: Force a token refresh even if the current token is still valid
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Token retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    AuthToken:
+      type: object
+      description: Authentication token for a connection
+      properties:
+        type:
+          type: string
+          description: Token type (Bearer, ApiKey, etc.)
+        access_token:
+          type: string
+          description: The access token value
+        expires_at:
+          type: string
+          format: date-time
+          description: Token expiration time
+        raw:
+          type: object
+          description: Full raw token response from the provider
+          additionalProperties: true
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+  responses:
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    SecretKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Secret key from Terapi environment settings. Passed as 'Bearer {secret_key}'
+externalDocs:
+  description: Terapi Documentation
+  url: https://docs.terapi.dev

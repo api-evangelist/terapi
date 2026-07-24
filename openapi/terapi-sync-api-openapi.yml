@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: Terapi Actions Sync API
+  description: Terapi is an open-source embedded integration platform for building native product integrations. The REST API provides endpoints for managing integration connections, synchronizing data between third-party services, triggering actions on external APIs, and managing authentication tokens. Terapi enables SaaS products to offer native integrations to their customers without building each connector from scratch.
+  version: '1.0'
+  contact:
+    name: Terapi Team
+    url: https://terapi.dev
+servers:
+- url: https://api.terapi.dev
+  description: Terapi Cloud API
+- url: http://localhost:3003
+  description: Terapi Self-Hosted API
+security:
+- SecretKeyAuth: []
+tags:
+- name: Sync
+  description: Trigger and manage data synchronization between services
+paths:
+  /sync/trigger:
+    post:
+      operationId: triggerSync
+      summary: Trigger Sync
+      description: Triggers a data synchronization run for a specific connection and sync configuration. The sync fetches updated data from the third-party provider.
+      tags:
+      - Sync
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriggerSyncRequest'
+      responses:
+        '200':
+          description: Sync triggered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncTriggerResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /sync/{connection_id}/{sync_name}:
+    get:
+      operationId: getSyncStatus
+      summary: Get Sync Status
+      description: Returns the current status and history of a specific sync.
+      tags:
+      - Sync
+      parameters:
+      - name: connection_id
+        in: path
+        required: true
+        description: The connection identifier
+        schema:
+          type: string
+      - name: sync_name
+        in: path
+        required: true
+        description: The name of the sync
+        schema:
+          type: string
+      - name: provider_config_key
+        in: query
+        required: true
+        description: The provider config key
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Sync status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request parameters or body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    TriggerSyncRequest:
+      type: object
+      required:
+      - connection_id
+      - provider_config_key
+      - syncs
+      properties:
+        connection_id:
+          type: string
+          description: The connection to sync for
+        provider_config_key:
+          type: string
+          description: The provider config key
+        syncs:
+          type: array
+          description: Names of syncs to trigger
+          items:
+            type: string
+    SyncTriggerResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        syncs:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              status:
+                type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+    SyncStatus:
+      type: object
+      description: Status and history of a data synchronization
+      properties:
+        sync_name:
+          type: string
+        connection_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - running
+          - success
+          - error
+          - paused
+        last_sync_date:
+          type: string
+          format: date-time
+        next_sync_date:
+          type: string
+          format: date-time
+        records_count:
+          type: integer
+          description: Total number of records synced
+        error:
+          type: string
+          description: Error message if sync failed
+  securitySchemes:
+    SecretKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Secret key from Terapi environment settings. Passed as 'Bearer {secret_key}'
+externalDocs:
+  description: Terapi Documentation
+  url: https://docs.terapi.dev
