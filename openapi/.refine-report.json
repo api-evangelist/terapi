@@ -1,0 +1,22 @@
+{
+  "provider": "terapi",
+  "sources": [
+    "terapi-actions-api-openapi.yml",
+    "terapi-authentication-api-openapi.yml",
+    "terapi-connections-api-openapi.yml",
+    "terapi-integrations-api-openapi.yml",
+    "terapi-sync-api-openapi.yml"
+  ],
+  "outputs": [
+    "terapi-actions-api-openapi.yml",
+    "terapi-authentication-api-openapi.yml",
+    "terapi-connections-api-openapi.yml",
+    "terapi-integrations-api-openapi.yml",
+    "terapi-sync-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
