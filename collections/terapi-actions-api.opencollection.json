@@ -1,0 +1,41 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Terapi Actions API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Actions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Trigger Action",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.terapi.dev/action/trigger",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Triggers an action on a connected third-party service via the specified connection. Actions are write operations like creating a record, sending a message, or updating a resource."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

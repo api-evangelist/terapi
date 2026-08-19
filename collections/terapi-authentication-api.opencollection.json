@@ -1,0 +1,57 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Terapi Actions Authentication API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Authentication Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.terapi.dev/auth/token/:provider_config_key/:connection_id",
+            "params": [
+              {
+                "name": "provider_config_key",
+                "value": "",
+                "type": "path",
+                "description": "The provider config key"
+              },
+              {
+                "name": "connection_id",
+                "value": "",
+                "type": "path",
+                "description": "The connection identifier"
+              },
+              {
+                "name": "force_refresh",
+                "value": "",
+                "type": "query",
+                "description": "Force a token refresh even if the current token is still valid"
+              }
+            ]
+          },
+          "docs": "Returns the current authentication token for a connection. Terapi automatically refreshes OAuth tokens as needed before returning."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

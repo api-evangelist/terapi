@@ -1,0 +1,116 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Terapi Actions Connections API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Connections",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Connections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.terapi.dev/connection",
+            "params": [
+              {
+                "name": "provider_config_key",
+                "value": "",
+                "type": "query",
+                "description": "Filter connections by integration provider config key"
+              },
+              {
+                "name": "connection_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by a specific connection ID"
+              }
+            ]
+          },
+          "docs": "Returns a list of all active connections for a given integration or provider. Connections represent authenticated links between end-user accounts and third-party services."
+        },
+        {
+          "info": {
+            "name": "Create Connection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.terapi.dev/connection",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new integration connection for an end-user with the specified provider. Used to programmatically create connections when auth tokens are already available."
+        },
+        {
+          "info": {
+            "name": "Get Connection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.terapi.dev/connection/:connection_id",
+            "params": [
+              {
+                "name": "connection_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the connection"
+              },
+              {
+                "name": "provider_config_key",
+                "value": "",
+                "type": "query",
+                "description": "The provider config key for this connection"
+              }
+            ]
+          },
+          "docs": "Returns details of a specific connection including its authentication status and metadata."
+        },
+        {
+          "info": {
+            "name": "Delete Connection",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.terapi.dev/connection/:connection_id",
+            "params": [
+              {
+                "name": "connection_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the connection"
+              },
+              {
+                "name": "provider_config_key",
+                "value": "",
+                "type": "query",
+                "description": "The provider config key for this connection"
+              }
+            ]
+          },
+          "docs": "Deletes a connection and revokes associated credentials. The end-user will need to re-authenticate to restore the connection."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
