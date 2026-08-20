@@ -25,6 +25,14 @@ tags:
   - Embedded iPaaS
   - Integration
   - Native Integrations
+  - Open-Source
+  - Workflow-Automation
+tags_raw:
+  - Authentication
+  - Connectors
+  - Embedded iPaaS
+  - Integration
+  - Native Integrations
   - Open Source
   - Workflow Automation
 url: https://raw.githubusercontent.com/api-evangelist/terapi/refs/heads/main/apis.yml
@@ -82,6 +90,8 @@ apis:
   description: Manage available integration configurations
   humanURL: https://terapi.dev
   tags:
+  - Integration
+  tags_raw:
   - Integrations
   properties:
   - type: OpenAPI
