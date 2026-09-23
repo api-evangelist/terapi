@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Terapi Actions Integrations API
+  title: Terapi Integrations API
   description: Terapi is an open-source embedded integration platform for building native product integrations. The REST API provides endpoints for managing integration connections, synchronizing data between third-party services, triggering actions on external APIs, and managing authentication tokens. Terapi enables SaaS products to offer native integrations to their customers without building each connector from scratch.
   version: '1.0'
   contact:
@@ -110,25 +110,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Integration'
-    Integration:
+    ErrorResponse:
       type: object
-      description: An integration configuration for a third-party provider
       properties:
-        unique_key:
+        error:
           type: string
-          description: Your unique key for this integration configuration
-        provider:
+          description: Error type
+        message:
           type: string
-          description: The provider name (e.g., github, salesforce, slack)
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        connection_count:
-          type: integer
-          description: Number of active connections using this integration
+          description: Human-readable error message
     CreateIntegrationRequest:
       type: object
       required:
@@ -150,18 +140,28 @@ components:
         oauth_scopes:
           type: string
           description: Comma-separated list of OAuth scopes to request
-    ErrorResponse:
+    Integration:
       type: object
+      description: An integration configuration for a third-party provider
       properties:
-        error:
+        unique_key:
           type: string
-          description: Error type
-        message:
+          description: Your unique key for this integration configuration
+        provider:
           type: string
-          description: Human-readable error message
+          description: The provider name (e.g., github, salesforce, slack)
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        connection_count:
+          type: integer
+          description: Number of active connections using this integration
   responses:
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
+    NotFound:
+      description: The requested resource was not found
       content:
         application/json:
           schema:
@@ -172,8 +172,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: The requested resource was not found
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
       content:
         application/json:
           schema:

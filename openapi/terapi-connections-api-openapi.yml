@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Terapi Actions Connections API
+  title: Terapi Connections API
   description: Terapi is an open-source embedded integration platform for building native product integrations. The REST API provides endpoints for managing integration connections, synchronizing data between third-party services, triggering actions on external APIs, and managing authentication tokens. Terapi enables SaaS products to offer native integrations to their customers without building each connector from scratch.
   version: '1.0'
   contact:
@@ -126,6 +126,22 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+    ConnectionListResponse:
+      type: object
+      properties:
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Connection'
     CreateConnectionRequest:
       type: object
       required:
@@ -146,13 +162,6 @@ components:
           type: object
           description: Custom metadata to store with this connection
           additionalProperties: true
-    ConnectionListResponse:
-      type: object
-      properties:
-        connections:
-          type: array
-          items:
-            $ref: '#/components/schemas/Connection'
     Connection:
       type: object
       description: An authenticated connection between an end-user and a third-party service
@@ -186,18 +195,9 @@ components:
             expires_at:
               type: string
               format: date-time
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error type
-        message:
-          type: string
-          description: Human-readable error message
   responses:
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
+    NotFound:
+      description: The requested resource was not found
       content:
         application/json:
           schema:
@@ -208,8 +208,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: The requested resource was not found
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
       content:
         application/json:
           schema:
