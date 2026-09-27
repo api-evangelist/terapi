@@ -80,20 +80,15 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    SyncTriggerResponse:
+    ErrorResponse:
       type: object
       properties:
-        success:
-          type: boolean
-        syncs:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-              status:
-                type: string
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
     SyncStatus:
       type: object
       description: Status and history of a data synchronization
@@ -121,15 +116,6 @@ components:
         error:
           type: string
           description: Error message if sync failed
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error type
-        message:
-          type: string
-          description: Human-readable error message
     TriggerSyncRequest:
       type: object
       required:
@@ -148,6 +134,20 @@ components:
           description: Names of syncs to trigger
           items:
             type: string
+    SyncTriggerResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        syncs:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              status:
+                type: string
   responses:
     NotFound:
       description: The requested resource was not found

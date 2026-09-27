@@ -43,6 +43,15 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
     TriggerActionRequest:
       type: object
       required:
@@ -78,15 +87,6 @@ components:
         error:
           type: string
           description: Error message if action failed
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error type
-        message:
-          type: string
-          description: Human-readable error message
   responses:
     BadRequest:
       description: Invalid request parameters or body

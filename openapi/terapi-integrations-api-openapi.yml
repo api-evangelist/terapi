@@ -103,13 +103,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    IntegrationListResponse:
-      type: object
-      properties:
-        integrations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Integration'
     ErrorResponse:
       type: object
       properties:
@@ -140,6 +133,13 @@ components:
         oauth_scopes:
           type: string
           description: Comma-separated list of OAuth scopes to request
+    IntegrationListResponse:
+      type: object
+      properties:
+        integrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Integration'
     Integration:
       type: object
       description: An integration configuration for a third-party provider

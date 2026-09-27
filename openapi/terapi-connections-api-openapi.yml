@@ -135,33 +135,6 @@ components:
         message:
           type: string
           description: Human-readable error message
-    ConnectionListResponse:
-      type: object
-      properties:
-        connections:
-          type: array
-          items:
-            $ref: '#/components/schemas/Connection'
-    CreateConnectionRequest:
-      type: object
-      required:
-      - connection_id
-      - provider_config_key
-      properties:
-        connection_id:
-          type: string
-          description: Your application's unique identifier for this connection
-        provider_config_key:
-          type: string
-          description: The integration provider config key
-        credentials:
-          type: object
-          description: Authentication credentials to store for this connection
-          additionalProperties: true
-        metadata:
-          type: object
-          description: Custom metadata to store with this connection
-          additionalProperties: true
     Connection:
       type: object
       description: An authenticated connection between an end-user and a third-party service
@@ -195,6 +168,33 @@ components:
             expires_at:
               type: string
               format: date-time
+    CreateConnectionRequest:
+      type: object
+      required:
+      - connection_id
+      - provider_config_key
+      properties:
+        connection_id:
+          type: string
+          description: Your application's unique identifier for this connection
+        provider_config_key:
+          type: string
+          description: The integration provider config key
+        credentials:
+          type: object
+          description: Authentication credentials to store for this connection
+          additionalProperties: true
+        metadata:
+          type: object
+          description: Custom metadata to store with this connection
+          additionalProperties: true
+    ConnectionListResponse:
+      type: object
+      properties:
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Connection'
   responses:
     NotFound:
       description: The requested resource was not found

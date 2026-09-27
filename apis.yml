@@ -7,14 +7,15 @@ description: >-
 type: Index
 deliveryModel:
   model: unknown
-  open_source: false
+  open_source: unknown
   commercial: false
   callable_host: true
   label: Delivery model not determined — needs a product licence on record
   confidence: low
   source:
   - openapi
-  generated: '2026-08-28'
+  - repository-unlicensed
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: freemium
@@ -37,8 +38,8 @@ tags:
   - Embedded iPaaS
   - Integration
   - Native Integrations
-  - Open-Source
-  - Workflow-Automation
+  - Open Source
+  - Workflow Automation
 tags_raw:
   - Authentication
   - Connectors
@@ -47,6 +48,8 @@ tags_raw:
   - Native Integrations
   - Open Source
   - Workflow Automation
+  - Open-Source
+  - Workflow-Automation
 url: https://raw.githubusercontent.com/api-evangelist/terapi/refs/heads/main/apis.yml
 created: '2026-03-27'
 modified: '2026-05-19'
