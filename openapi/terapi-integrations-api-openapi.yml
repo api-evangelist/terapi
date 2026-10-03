@@ -103,15 +103,25 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    ErrorResponse:
+    Integration:
       type: object
+      description: An integration configuration for a third-party provider
       properties:
-        error:
+        unique_key:
           type: string
-          description: Error type
-        message:
+          description: Your unique key for this integration configuration
+        provider:
           type: string
-          description: Human-readable error message
+          description: The provider name (e.g., github, salesforce, slack)
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        connection_count:
+          type: integer
+          description: Number of active connections using this integration
     CreateIntegrationRequest:
       type: object
       required:
@@ -140,25 +150,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Integration'
-    Integration:
+    ErrorResponse:
       type: object
-      description: An integration configuration for a third-party provider
       properties:
-        unique_key:
+        error:
           type: string
-          description: Your unique key for this integration configuration
-        provider:
+          description: Error type
+        message:
           type: string
-          description: The provider name (e.g., github, salesforce, slack)
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        connection_count:
-          type: integer
-          description: Number of active connections using this integration
+          description: Human-readable error message
   responses:
     NotFound:
       description: The requested resource was not found
@@ -166,14 +166,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request parameters or body
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
+    BadRequest:
+      description: Invalid request parameters or body
       content:
         application/json:
           schema:

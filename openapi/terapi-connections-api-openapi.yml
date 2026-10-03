@@ -125,16 +125,26 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request parameters or body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error type
-        message:
-          type: string
-          description: Human-readable error message
     Connection:
       type: object
       description: An authenticated connection between an end-user and a third-party service
@@ -168,6 +178,13 @@ components:
             expires_at:
               type: string
               format: date-time
+    ConnectionListResponse:
+      type: object
+      properties:
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Connection'
     CreateConnectionRequest:
       type: object
       required:
@@ -188,32 +205,15 @@ components:
           type: object
           description: Custom metadata to store with this connection
           additionalProperties: true
-    ConnectionListResponse:
+    ErrorResponse:
       type: object
       properties:
-        connections:
-          type: array
-          items:
-            $ref: '#/components/schemas/Connection'
-  responses:
-    NotFound:
-      description: The requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request parameters or body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
   securitySchemes:
     SecretKeyAuth:
       type: apiKey

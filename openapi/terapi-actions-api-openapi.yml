@@ -42,7 +42,35 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  responses:
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request parameters or body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
+    ActionResponse:
+      type: object
+      description: Result of a triggered action
+      properties:
+        success:
+          type: boolean
+        action_name:
+          type: string
+        output:
+          type: object
+          description: Output data returned by the action
+          additionalProperties: true
+        error:
+          type: string
+          description: Error message if action failed
     ErrorResponse:
       type: object
       properties:
@@ -72,34 +100,6 @@ components:
           type: object
           description: Input parameters for the action
           additionalProperties: true
-    ActionResponse:
-      type: object
-      description: Result of a triggered action
-      properties:
-        success:
-          type: boolean
-        action_name:
-          type: string
-        output:
-          type: object
-          description: Output data returned by the action
-          additionalProperties: true
-        error:
-          type: string
-          description: Error message if action failed
-  responses:
-    BadRequest:
-      description: Invalid request parameters or body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     SecretKeyAuth:
       type: apiKey
