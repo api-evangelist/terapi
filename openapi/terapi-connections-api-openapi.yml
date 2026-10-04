@@ -125,26 +125,43 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    NotFound:
-      description: The requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request parameters or body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   schemas:
+    CreateConnectionRequest:
+      type: object
+      required:
+      - connection_id
+      - provider_config_key
+      properties:
+        connection_id:
+          type: string
+          description: Your application's unique identifier for this connection
+        provider_config_key:
+          type: string
+          description: The integration provider config key
+        credentials:
+          type: object
+          description: Authentication credentials to store for this connection
+          additionalProperties: true
+        metadata:
+          type: object
+          description: Custom metadata to store with this connection
+          additionalProperties: true
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+    ConnectionListResponse:
+      type: object
+      properties:
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Connection'
     Connection:
       type: object
       description: An authenticated connection between an end-user and a third-party service
@@ -178,42 +195,25 @@ components:
             expires_at:
               type: string
               format: date-time
-    ConnectionListResponse:
-      type: object
-      properties:
-        connections:
-          type: array
-          items:
-            $ref: '#/components/schemas/Connection'
-    CreateConnectionRequest:
-      type: object
-      required:
-      - connection_id
-      - provider_config_key
-      properties:
-        connection_id:
-          type: string
-          description: Your application's unique identifier for this connection
-        provider_config_key:
-          type: string
-          description: The integration provider config key
-        credentials:
-          type: object
-          description: Authentication credentials to store for this connection
-          additionalProperties: true
-        metadata:
-          type: object
-          description: Custom metadata to store with this connection
-          additionalProperties: true
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error type
-        message:
-          type: string
-          description: Human-readable error message
+  responses:
+    BadRequest:
+      description: Invalid request parameters or body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     SecretKeyAuth:
       type: apiKey

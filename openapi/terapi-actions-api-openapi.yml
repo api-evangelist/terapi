@@ -43,14 +43,14 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   responses:
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
+    BadRequest:
+      description: Invalid request parameters or body
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request parameters or body
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
       content:
         application/json:
           schema:
@@ -71,15 +71,6 @@ components:
         error:
           type: string
           description: Error message if action failed
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error type
-        message:
-          type: string
-          description: Human-readable error message
     TriggerActionRequest:
       type: object
       required:
@@ -100,6 +91,15 @@ components:
           type: object
           description: Input parameters for the action
           additionalProperties: true
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
   securitySchemes:
     SecretKeyAuth:
       type: apiKey

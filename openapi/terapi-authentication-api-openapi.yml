@@ -84,14 +84,14 @@ components:
           description: Full raw token response from the provider
           additionalProperties: true
   responses:
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
+    NotFound:
+      description: The requested resource was not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: The requested resource was not found
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
       content:
         application/json:
           schema:
