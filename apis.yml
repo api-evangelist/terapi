@@ -133,6 +133,12 @@ apis:
   - type: GettingStarted
     url: https://docs.terapi.dev/getting-started
 common:
+  - type: Plans
+    url: plans/terapi-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/terapi-rate-limits.yml
+  - type: FinOps
+    url: finops/terapi-finops.yml
   - type: AgenticAccess
     url: agentic-access/terapi-agentic-access.yml
   - type: DomainSecurity
