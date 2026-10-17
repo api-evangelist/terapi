@@ -56,15 +56,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error type
-        message:
-          type: string
-          description: Human-readable error message
     AuthToken:
       type: object
       description: Authentication token for a connection
@@ -83,6 +74,15 @@ components:
           type: object
           description: Full raw token response from the provider
           additionalProperties: true
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
   responses:
     NotFound:
       description: The requested resource was not found

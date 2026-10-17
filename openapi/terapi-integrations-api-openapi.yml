@@ -102,45 +102,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    BadRequest:
-      description: Invalid request parameters or body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: The requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Authentication failed - invalid or missing secret key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    Integration:
-      type: object
-      description: An integration configuration for a third-party provider
-      properties:
-        unique_key:
-          type: string
-          description: Your unique key for this integration configuration
-        provider:
-          type: string
-          description: The provider name (e.g., github, salesforce, slack)
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        connection_count:
-          type: integer
-          description: Number of active connections using this integration
     ErrorResponse:
       type: object
       properties:
@@ -150,13 +112,6 @@ components:
         message:
           type: string
           description: Human-readable error message
-    IntegrationListResponse:
-      type: object
-      properties:
-        integrations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Integration'
     CreateIntegrationRequest:
       type: object
       required:
@@ -178,6 +133,51 @@ components:
         oauth_scopes:
           type: string
           description: Comma-separated list of OAuth scopes to request
+    IntegrationListResponse:
+      type: object
+      properties:
+        integrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Integration'
+    Integration:
+      type: object
+      description: An integration configuration for a third-party provider
+      properties:
+        unique_key:
+          type: string
+          description: Your unique key for this integration configuration
+        provider:
+          type: string
+          description: The provider name (e.g., github, salesforce, slack)
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        connection_count:
+          type: integer
+          description: Number of active connections using this integration
+  responses:
+    BadRequest:
+      description: Invalid request parameters or body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication failed - invalid or missing secret key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     SecretKeyAuth:
       type: apiKey
